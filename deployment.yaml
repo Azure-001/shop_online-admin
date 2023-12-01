@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: social-admin-api
+  namespace: test
+  labels:
+    app: social-admin-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: social-admin-api
+  template:
+    metadata:
+      labels:
+        app: social-admin-api
+    spec:
+      imagePullSecrets: 
+        - name: regsecret
+      containers:
+      - name: social-admin-api
+        image: __IMAGE__
+        ports:
+        - containerPort: 8081
+#        volumeMounts:
+#        - name: logs-persistent-storage
+#          mountPath: /opt/logs
+#      volumes:
+#      - name: logs-persistent-storage
+#        hostPath:
+#          path: /opt/logs
+#          type: DirectoryOrCreate
+
+---
+apiVersion: v1
+kind: Service      
+metadata:
+  name: social-admin-api-svc
+  namespace: test
+spec:
+  selector:         #通过下面标签(label)来选择Pod
+    app: social-admin-api
+  ports:
+  - name: http
+    targetPort: 8081
+    port: 8080
